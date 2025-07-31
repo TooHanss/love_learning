@@ -1,32 +1,16 @@
 function love.load()
-    ListOfRects = {}
-end
-
-function createRect()
-    local newRect = {}
-    newRect.mode = "line"
-    newRect.width = 10
-    newRect.height = 10
-    newRect.x = 10
-    newRect.y = 10
-    table.insert(ListOfRects, newRect)
-end
-
-function love.keypressed(key)
-    if key == "space" then
-        createRect()
-    end
+	Object = require("lib.classic")
+	require("rectangle")
+	r1 = Rectangle(100, 200, 30, 50, 40, "line")
+	r2 = Rectangle(100, 300, 40, 50, 100, "fill")
 end
 
 function love.update(dt)
-    for i, v in ipairs(ListOfRects) do
-        v.x = v.x + 20 * dt
-        v.y = v.y + 20 * dt
-    end
+	r1:update(dt)
+	r2:update(dt)
 end
 
 function love.draw()
-    for i, v in ipairs(ListOfRects) do
-        love.graphics.rectangle(v.mode, v.x, v.y, v.width, v.height)
-    end
+	r1:draw()
+	r2:draw()
 end
