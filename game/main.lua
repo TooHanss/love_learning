@@ -1,90 +1,45 @@
-require("keymaps")
-local blockInput = false
+function love.load()
+  love.window.setTitle("Asteroids")
+  love.window.setMode(500, 500)
 
-local playback = false
-local pressed_key = {}
-local looped_keys = {}
-local max_keys = 4
-local num_loops = 3
-local interval = 1.0
-local current_loop = 0
-local current_key_index = 0
-local timer = 0.0
-function love.load() end
+  Player = {
+    thrust = 500,
+    friciton = 0.98,
+    velocity_x = 0.0,
+    velocity_y = 0.0,
+    rot_speed = 3.0,
+    rot = 0,
+    pos = {x = 250, y = 250},
+    texture = love.graphics.newImage("assets/tx_player.png"),
+  }
 
-debugtext = ""
+end
+
 
 function love.update(dt)
-	debugtext = "current key index: " .. current_key_index .. "current loop: " .. current_loop
-	if not playback then
-		return
-	end
-	timer = timer + dt
-	if timer >= interval then
-		timer = 0.0
-		increment_looped_keys()
-	end
+  if love.keyboard.isDown("left") then
+    Player.rot = Player.rot - Player.rot_speed  * dt
+  end
+  if love.keyboard.isDown("right") then
+    Player.rot = Player.rot + Player.rot_speed * dt
+  end
+  if love.keyboard.isDown("up") then
+    -- Player.pos.x = Player.pos.x + 10
+    Player.velocity_x = Player.velocity_x - math.cos(Player.rot + math.pi / 2) * Player.thrust * dt
+    Player.velocity_y = Player.velocity_y - math.sin(Player.rot + math.pi / 2) * Player.thrust * dt
+  end
+
+  Player.velocity_x = Player.velocity_x * Player.friciton
+  Player.velocity_y = Player.velocity_y * Player.friciton
+
+  Player.pos.x = Player.pos.x + Player.velocity_x * dt
+  Player.pos.y = Player.pos.y + Player.velocity_y * dt
+
 end
 
-function increment_looped_keys()
-	if current_loop > num_loops then
-		return
-	end
-
-	table.insert(looped_keys, pressed_key[current_key_index])
-	if current_key_index == max_keys then
-		current_loop = current_loop + 1
-	end
-	current_key_index = math.max((current_key_index + 1) % (max_keys + 1), 1)
-end
-
-function containsValue(table, value)
-	for _, v in pairs(table) do
-		if v == value then
-			return true
-		end
-	end
-	return false
-end
-
-function love.keypressed(key)
-	if blockInput then
-		return
-	end
-
-	if not containsValue(Keymaps, key) then
-		return
-	end
-
-	if #pressed_key < 4 then
-		table.insert(pressed_key, key)
-		return
-	end
-
-	if not playback then
-		toggle_playback(true)
-	end
-end
-
-function toggle_playback(toggled)
-	if toggled then
-		current_loop = 1
-		current_key_index = 1
-		blockInput = true
-		playback = true
-	else
-		blockInput = false
-		playback = false
-	end
-end
 
 function love.draw()
-	if pressed_key then
-		love.graphics.print(pressed_key, 20, 20)
-	end
-	if looped_keys then
-		love.graphics.print(looped_keys, 20, 40)
-	end
-	love.graphics.print(timer, 20, 60)
-	love.graphics.print(debugtext, 20, 80)
+  w = Player.texture:getWidth()
+  h = Player.texture:getHeight()
+  love.graphics.draw(Player.texture, Player.pos.x, Player.pos.y, Player.rot, 1, 1, w / 2, h / 2)
 end
