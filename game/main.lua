@@ -1,3 +1,8 @@
+-- Game has level, first level has 4 big asteroids - proceed to next leven when all asteroids and ufo are cleared
+-- Asteroids split twice
+-- ufo bullets break asteroids
+-- asteroids kill ufos on contact
+
 local player = require("player")
 local asteroids = require("asteroids")
 local collision = require("collision")
