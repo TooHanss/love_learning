@@ -2,15 +2,21 @@ local window = require("window")
 local player = require("player")
 local asteroids = {}
 local spawned = false
+local currentLevel = 1
 
-function asteroids.spawn(pos, angle)
+function asteroids.spawn(pos, angle, split_level)
+	local max_speed_to_split = { 100, 75, 50 }
+	local new_speed = math.random(20, max_speed_to_split[split_level])
 	local asteroid = {
 		pos = { x = pos.x, y = pos.y },
-		speed = math.random(20, 50),
+		speed = new_speed,
+		size_to_split = { 0.50, 0.75, 1.0 },
+		score_to_split = { 100, 50, 20 },
 		angle = angle,
 		rot = 0,
 		rot_speed = math.random(-1, 1),
 		img = love.graphics.newImage("assets/tx_asteroid.png"),
+		split_level = split_level,
 		dead = false,
 	}
 	table.insert(asteroids, asteroid)
@@ -20,7 +26,7 @@ function asteroids.update(dt)
 	if not spawned then
 		for _ = 1, 4, 1 do
 			local new_pos = asteroids.getRandomSpawnPosition()
-			asteroids.spawn(new_pos, math.random(0, 6.2))
+			asteroids.spawn(new_pos, math.random(0, 6.2), 3)
 		end
 		spawned = true
 	end
@@ -47,7 +53,15 @@ function asteroids.update(dt)
 		end
 
 		if a.dead then
-			table.remove(asteroids, i)
+			if a.split_level - 1 <= 0 then
+				table.remove(asteroids, i)
+				player.addScore(a.score_to_split[a.split_level])
+			else
+				player.addScore(a.score_to_split[a.split_level])
+				asteroids.spawn(a.pos, math.random(0.0, 6.2), a.split_level - 1)
+				asteroids.spawn(a.pos, math.random(0.0, 6.2), a.split_level - 1)
+				table.remove(asteroids, i)
+			end
 		end
 	end
 end
@@ -56,7 +70,16 @@ function asteroids.draw()
 	for _, a in ipairs(asteroids) do
 		local w = a.img:getWidth()
 		local h = a.img:getHeight()
-		love.graphics.draw(a.img, a.pos.x, a.pos.y, a.rot, 1, 1, w / 2, h / 2)
+		love.graphics.draw(
+			a.img,
+			a.pos.x,
+			a.pos.y,
+			a.rot,
+			a.size_to_split[a.split_level],
+			a.size_to_split[a.split_level],
+			w / 2,
+			h / 2
+		)
 	end
 end
 
@@ -83,6 +106,18 @@ function asteroids.getRandomSpawnPosition()
 	end
 
 	return { x = x, y = y }
+end
+
+function asteroids.nextLevel()
+	spawned = false
+	currentLevel = currentLevel + 1
+	if not spawned then
+		for _ = 1, 4 + currentLevel - 1, 1 do
+			local new_pos = asteroids.getRandomSpawnPosition()
+			asteroids.spawn(new_pos, math.random(0, 6.2), 3)
+		end
+		spawned = true
+	end
 end
 
 return asteroids

@@ -8,6 +8,7 @@ function hud.draw(dt)
 		local x = 10 + (player.texture:getWidth() * i)
 		love.graphics.draw(player.texture, x, 10)
 	end
+	love.graphics.print("Score: " .. tostring(player.getScore()))
 end
 
 return hud

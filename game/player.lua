@@ -1,19 +1,20 @@
 local player = {}
 local bullets = require("bullets")
+local score = 0
 
 function player.load()
 	player.thrust = 500
 	player.friciton = 0.98
 	player.velocity_x = 0.0
 	player.velocity_y = 0.0
-	player.rot_speed = 3.0
+	player.rot_speed = 5.0
 	player.rot = 0
 	player.pos = { x = 250, y = 250 }
-	player.bullet_cooldown = 0
-	player.bullet_cooldown_default = 0.25
 	player.texture = love.graphics.newImage("assets/tx_player.png")
 	player.dead = false
 	player.lives = 3
+	player.bullet_cooldown = 0.00
+	player.bullet_cooldown_default = 0.05
 	player.damaged_cooldown = 0
 	player.damaged_cooldown_default = 3
 	player.invincible = false
@@ -59,12 +60,13 @@ function player.update(dt)
 	end
 
 	-- bullets
-	player.bullet_cooldown = math.max(0, player.bullet_cooldown - dt)
-
-	if love.keyboard.isDown("space") then
-		if player.bullet_cooldown <= 0 then
-			bullets.spawn(player.rot, player.pos)
-			player.bullet_cooldown = player.bullet_cooldown_default
+	player.bullet_cooldown = player.bullet_cooldown - dt
+	if #bullets < 4 then
+		if love.keyboard.isDown("space") then
+			if player.bullet_cooldown <= 0 then
+				bullets.spawn(player.rot, player.pos)
+				player.bullet_cooldown = player.bullet_cooldown_default
+			end
 		end
 	end
 
@@ -101,6 +103,15 @@ function player.damage()
 	if player.lives <= 0 then
 		player.dead = true
 	end
+end
+
+function player.addScore(add)
+	score = score + add
+	return score
+end
+
+function player.getScore()
+	return score
 end
 
 return player

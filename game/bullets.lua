@@ -1,3 +1,4 @@
+local window = require("window")
 local bullets = {}
 
 function bullets.spawn(angle, pos)
@@ -5,7 +6,7 @@ function bullets.spawn(angle, pos)
 		speed = 500,
 		angle = angle,
 		pos = { x = pos.x, y = pos.y },
-		life = 2,
+		life = 0.75,
 		dead = false,
 	}
 
@@ -18,6 +19,22 @@ function bullets.update(dt)
 		b.pos.x = b.pos.x + math.cos(b.angle - math.pi / 2) * b.speed * dt
 		b.pos.y = b.pos.y + math.sin(b.angle - math.pi / 2) * b.speed * dt
 		b.life = b.life - dt
+		if b.pos.x > window.width then
+			b.pos.x = 0
+		end
+
+		if b.pos.x < 0 then
+			b.pos.x = window.width
+		end
+
+		if b.pos.y > window.height then
+			b.pos.y = 0
+		end
+
+		if b.pos.y < 0 then
+			b.pos.y = window.height
+		end
+
 		if b.life <= 0 then
 			b.dead = true
 		end
@@ -30,7 +47,7 @@ end
 function bullets.draw()
 	for _, b in ipairs(bullets) do
 		love.graphics.setColor(1, 1, 1, 1)
-		love.graphics.circle("fill", b.pos.x, b.pos.y, 5)
+		love.graphics.circle("fill", b.pos.x, b.pos.y, 2)
 	end
 end
 

@@ -1,7 +1,7 @@
--- Game has level, first level has 4 big asteroids - proceed to next leven when all asteroids and ufo are cleared
--- Asteroids split twice
+-- Score - big = 20. small = 50. smallest = 100, ufo = 200
 -- ufo bullets break asteroids
 -- asteroids kill ufos on contact
+-- bullets fire as fast as you can press space but max of 5 bullets on screen at once.
 
 local player = require("player")
 local asteroids = require("asteroids")
@@ -22,6 +22,9 @@ function love.update(dt)
 			love.event.quit("restart")
 		end
 		return
+	end
+	if #asteroids == 0 then
+		asteroids.nextLevel()
 	end
 	player.update(dt)
 	asteroids.update(dt)

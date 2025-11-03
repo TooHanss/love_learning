@@ -14,7 +14,9 @@ function collision.handleCollisions()
 	-- Asteroids vs Player
 	for i = #asteroids, 1, -1 do
 		local a = asteroids[i]
-		if checkCircleCollision(a.pos.x, a.pos.y, 32, player.pos.x, player.pos.y, 32) then
+		if
+			checkCircleCollision(a.pos.x, a.pos.y, 25 * a.size_to_split[a.split_level], player.pos.x, player.pos.y, 30)
+		then
 			if not player.invincible then
 				player.damage()
 				a.dead = true
