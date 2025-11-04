@@ -1,5 +1,6 @@
 local window = require("window")
 local player = require("player")
+local particles = require("particles")
 local asteroids = {}
 local spawned = false
 local currentLevel = 1
@@ -53,6 +54,7 @@ function asteroids.update(dt)
 		end
 
 		if a.dead then
+			particles.spawn(a.pos, 3, 20, 1, 100, 0.3, 1.0)
 			if a.split_level - 1 <= 0 then
 				table.remove(asteroids, i)
 				player.addScore(a.score_to_split[a.split_level])

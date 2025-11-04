@@ -14,7 +14,7 @@ function player.load()
 	player.dead = false
 	player.lives = 3
 	player.bullet_cooldown = 0.00
-	player.bullet_cooldown_default = 0.05
+	player.bullet_cooldown_default = 0.20
 	player.damaged_cooldown = 0
 	player.damaged_cooldown_default = 3
 	player.invincible = false

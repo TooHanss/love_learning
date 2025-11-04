@@ -29,7 +29,7 @@ function collision.handleCollisions()
 		local b = bullets[i]
 		for j = #asteroids, 1, -1 do
 			local a = asteroids[j]
-			if checkCircleCollision(b.pos.x, b.pos.y, 5, a.pos.x, a.pos.y, 32) then
+			if checkCircleCollision(b.pos.x, b.pos.y, 2, a.pos.x, a.pos.y, 32) then
 				b.dead = true
 				a.dead = true
 			end

@@ -8,6 +8,7 @@ local asteroids = require("asteroids")
 local collision = require("collision")
 local window = require("window")
 local hud = require("hud")
+local particles = require("particles")
 
 function love.load()
 	love.window.setTitle("Asteroids")
@@ -28,6 +29,7 @@ function love.update(dt)
 	end
 	player.update(dt)
 	asteroids.update(dt)
+	particles.update(dt)
 	collision.handleCollisions()
 end
 
@@ -39,4 +41,5 @@ function love.draw()
 	player.draw()
 	asteroids.draw()
 	hud.draw()
+	particles.draw()
 end
