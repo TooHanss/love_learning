@@ -9,17 +9,17 @@ function Ball.new()
 	self.pos = { x = 100, y = 100 }
 	self.angle = 0.0
 	self.speed = 100.0
-	self.block_movement = false
+	self.blockMovement = false
 	self.targetPos = { x = 0, y = 0 }
 	self.colliding = true
+	self.height = 0.0 --Do something here like get distance to target pos and make the height go up and down
 	return self
 end
 
 function Ball:update(dt)
 	self.pos.x = self.pos.x + math.cos(self.angle) * self.speed * dt
 	self.pos.y = self.pos.y + math.sin(self.angle) * self.speed * dt
-	if utils.float_eq(self.pos.x, self.targetPos.x, 0.5) then
-		print("------------------------------")
+	if utils.float_eq(self.pos.x, self.targetPos.x, 1.0) then
 		self:onTargetReached()
 	end
 end
@@ -27,7 +27,7 @@ end
 function Ball:draw()
 	love.graphics.setColor(1.0, 1.0, 1.0, 1.0)
 	love.graphics.circle("fill", self.pos.x, self.pos.y, self.rad)
-	love.graphics.circle("fill", self.targetPos.x, self.targetPos.y, self.rad)
+	-- love.graphics.circle("fill", self.targetPos.x, self.targetPos.y, self.rad)
 end
 
 function Ball:onCollision(other)
@@ -36,11 +36,11 @@ function Ball:onCollision(other)
 	end
 	if other.player then
 		self.colliding = false
-		local newPos = {
+		local newTarget = {
 			x = math.random(other.oppRegion.tl.x, other.oppRegion.br.x),
 			y = math.random(other.oppRegion.tl.y, other.oppRegion.br.y),
 		}
-		self:setTargetPos(newPos)
+		self:setTargetPos(newTarget)
 	end
 end
 
