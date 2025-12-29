@@ -6,7 +6,8 @@ function PPTable.new()
 	self.shape = "rect"
 	self.pos = { x = 400, y = 250 }
 	self.size = { x = 111, y = 200 }
-	self.block_movement = true
+	self.blockMovement = true
+	self.table = true
 	return self
 end
 
